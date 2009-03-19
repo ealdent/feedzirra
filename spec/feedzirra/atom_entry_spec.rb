@@ -30,4 +30,16 @@ describe Feedzirra::AtomEntry do
   it "should parse the published date" do
     @entry.published.to_s.should == "Fri Jan 16 18:21:00 UTC 2009"
   end
+
+  it "should parse the categories" do
+    @entry.categories.should == ['Turkey', 'Seattle']
+  end
+  
+  it "should parse the updated date" do
+    @entry.updated.to_s.should == "Fri Jan 16 18:21:00 UTC 2009"
+  end
+  
+  it "should parse the id" do
+    @entry.id.should == "tag:typepad.com,2003:post-61484736"
+  end
 end

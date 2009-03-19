@@ -1,32 +1,43 @@
 module Feedzirra
-  module FeedEntryUtilities
-    attr_reader :published
+  module FeedEntryUtilities    
+    def published
+      @published || @updated
+    end
     
     def parse_datetime(string)
-      DateTime.parse(string).feed_utils_to_gm_time
-    end
-    
-    def published=(val)
-      @published = parse_datetime(val)
-    end
-    
-    def sanitized
-      dispatcher = Class.new do
-        def initialize(entry)
-          @entry = entry
-        end
-        
-        def method_missing(method, *args)
-          Dryopteris.sanitize(@entry.send(method))
-        end
+      begin
+        DateTime.parse(string).feed_utils_to_gm_time
+      rescue
+        puts "DATE CAN'T BE PARSED: #{string}"
+        nil
       end
-      dispatcher.new(self)
     end
     
+    ##
+    # Returns the id of the entry or its url if not id is present, as some formats don't support it
+    def id
+      @id || @url
+    end
+    
+    ##
+    # Writter for published. By default, we keep the "oldest" publish time found.
+    def published=(val)
+      parsed = parse_datetime(val)
+      @published = parsed if !@published || parsed < @published
+    end
+    
+    ##
+    # Writter for udapted. By default, we keep the most recenet update time found.
+    def updated=(val)
+      parsed = parse_datetime(val)
+      @updated = parsed if !@updated || parsed > @updated
+    end
+
     def sanitize!
-      self.title   = sanitized.title
-      self.author  = sanitized.author
-      self.content = sanitized.content
+      self.title.sanitize!   if self.title
+      self.author.sanitize!  if self.author
+      self.summary.sanitize! if self.summary
+      self.content.sanitize! if self.content
     end
     
     alias_method :last_modified, :published

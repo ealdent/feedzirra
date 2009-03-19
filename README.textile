@@ -42,6 +42,11 @@ NoMethodError: undefined method `on_success' for #<Curl::Easy:0x1182724>
 </pre>
 This means that you are requiring curl-multi or the Ruby Forge version of Curb somewhere. You can't use those and need to get the taf2 version up and running.
 
+If you're on Debian or Ubuntu and getting errors while trying to install the taf2-curb gem, it could be because you don't have the latest version of libcurl installed. Do this to fix:
+<pre>
+sudo apt-get install libcurl4-gnutls-dev
+</pre>
+
 Another problem could be if you are running Mac Ports and you have libcurl installed through there. You need to uninstall it for curb to work! The version in Mac Ports is old and doesn't play nice with curb. If you're running Leopard, you can just uninstall and you should be golden. If you're on an older version of OS X, you'll then need to "download curl":http://curl.haxx.se/download.html and build from source. Then you'll have to install the taf2-curb gem again. You might have to perform the step above.
 
 If you're still having issues, please let me know on the mailing list. Also, "Todd Fisher (taf2)":http://github.com/taf2 is working on fixing the gem install. Please send him a full error report.
@@ -69,11 +74,13 @@ entry.author     # => "Paul Dix"
 entry.summary    # => "..."
 entry.content    # => "..."
 entry.published  # => Thu Jan 29 17:00:19 UTC 2009 # it's a Time object
+entry.categories # => ["...", "..."]
 
 # sanitizing an entry's content
-entry.sanitized.title   # => returns the title with harmful stuff escaped
-entry.sanitized.author  # => returns the author with harmful stuff escaped
-entry.sanitized.content # => returns the content with harmful stuff escaped
+entry.title.sanitize   # => returns the title with harmful stuff escaped
+entry.author.sanitize  # => returns the author with harmful stuff escaped
+entry.content.sanitize # => returns the content with harmful stuff escaped
+entry.content.sanitize! # => returns content with harmful stuff escaped and replaces original (also exists for author and title)
 entry.sanitize!         # => sanitizes the entry's title, author, and content in place (as in, it changes the value to clean versions)
 feed.sanitize_entries!  # => sanitizes all entries in place
 
@@ -102,6 +109,16 @@ feed = Feedzirra::Feed.fetch_and_parse("http://feeds.feedburner.com/PaulDixExpla
 
 # the behavior for the handlers when using Feedzirra::Feed.update is slightly different. The feed passed into on_success will be
 # the updated feed with the standard updated accessors. on failure it will be the original feed object passed into update
+
+# You can add custom parsing to the feed entry classes. Say you want the wfw:comments fields in an entry
+Feedzirra::Feed.add_common_feed_entry_element("wfw:commentRss", :as => :comment_rss)
+# The arguments are the same as the SAXMachine arguments for the element method. For more example usage look at the RSSEntry and
+# AtomEntry classes. Now you can access those in an atom feed:
+Feedzirra::Feed.parse(some_atom_xml).entries.first.comment_rss_ # => wfw:commentRss is now parsed!
+
+# You can also access http basic auth feeds. Unfortunately, you can't get to these inside of a bulk get of a bunch of feeds.
+# You'll have to do it on its own like so:
+Feedzirra::Feed.fetch_and_parse(some_url, :http_authentication => ["myusername", "mypassword"])
 
 # Defining custom parsers
 # TODO: the functionality is here, just write some good examples that show how to do this
@@ -133,13 +150,10 @@ This thing needs to hammer on many different feeds in the wild. I'm sure there w
 
 Here are some more specific TODOs.
 * Make a feedzirra-rails gem to integrate feedzirra seamlessly with Rails and ActiveRecord.
-* Add function to sanitize content.
-* Add support to automatically handle gzip and deflate encododing.
 * Add support for authenticated feeds.
 * Create a super sweet DSL for defining new parsers.
 * Test against Ruby 1.9.1 and fix any bugs.
 * I'm not keeping track of modified on entries. Should I add this?
-* Should I be parsing stuff like tags or categories for entries?
 * Clean up the fetching code inside feed.rb so it doesn't suck so hard.
 * Make the feed_spec actually mock stuff out so it doesn't hit the net.
 * Readdress how feeds determine if they can parse a document. Maybe I should use namespaces instead?

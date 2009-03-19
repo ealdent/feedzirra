@@ -1,4 +1,15 @@
 module Feedzirra
+  # == Summary
+  # Parser for dealing with RDF feed entries.
+  #
+  # == Attributes
+  # * title
+  # * url
+  # * author
+  # * content
+  # * summary
+  # * published
+  # * categories
   class RSSEntry
     include SAXMachine
     include FeedEntryUtilities
@@ -11,5 +22,14 @@ module Feedzirra
 
     element :pubDate, :as => :published
     element :"dc:date", :as => :published
+    element :"dc:Date", :as => :published
+    element :"dcterms:created", :as => :published
+    
+    
+    element :"dcterms:modified", :as => :updated
+    element :issued, :as => :published
+    elements :category, :as => :categories
+    
+    element :guid, :as => :id
   end
 end

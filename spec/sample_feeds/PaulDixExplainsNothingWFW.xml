@@ -42,7 +42,7 @@ The SAX C is 7.4 times faster than SAX Nokogiri. Now, that doesn't seem like a w
 &lt;a href="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?a=9Q8qfQ.P"&gt;&lt;img src="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?i=9Q8qfQ.P" border="0"&gt;&lt;/img&gt;&lt;/a&gt; &lt;a href="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?a=rLK96Z.p"&gt;&lt;img src="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?i=rLK96Z.p" border="0"&gt;&lt;/img&gt;&lt;/a&gt; &lt;a href="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?a=B95sFg.p"&gt;&lt;img src="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?i=B95sFg.p" border="0"&gt;&lt;/img&gt;&lt;/a&gt;
 &lt;/div&gt;&lt;img src="http://feeds.feedburner.com/~r/PaulDixExplainsNothing/~4/519925023" height="1" width="1"/&gt;</content>
 
-
+<wfw:commentRss>this is the new val</wfw:commentRss>
     <feedburner:origLink>http://www.pauldix.net/2009/01/making-a-ruby-c-library-even-faster.html</feedburner:origLink></entry>
     <entry>
         <title>SAX Machine - SAX Parsing made easy</title>
